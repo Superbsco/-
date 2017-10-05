@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+         {{!-- Base Meta --}}
+    	<title>{{meta_title}}</title>
+    	<link href="//cdn.bootcss.com/highlight.js/8.0/styles/tomorrow-night-eighties.min.css" rel="stylesheet">
+    	<script src="//cdn.bootcss.com/highlight.js/8.0/highlight.min.js"></script>  
+  <!--   	<meta name="HandheldFriendly" content="True" />
+    	<meta name="viewport" content="width=device-width, initial-scale=1.0" /> -->
+	<title>圣杯布局经典例子</title>
+	<style type="text/css">
+		/*aside, footer, header{display: block;}*/
+		*{margin: 0;padding: 0px;}
+		body{margin: auto;width: 80%;}
+		#demo{text-align: center;}
+		#nav{padding: 20px 0 10px;}
+		#hd{background-color: #aaa;height: 50px;}
+		#main{background-color: #4DBCB0;height: 250px;}
+		#aside{background-color: #DAF1EF;height: 250px;}
+		#ft{background-color: #cde;height: 50px;}
+		#bd{padding-right:210px;margin: 10px 0;overflow: hidden;}
+		#aside{float:left;position:relative;right:-210px;width:200px;margin-left:-200px;}
+		#main{float:left;width:100%;}
+		.code{font: 18px/1.5 'Microsoft YaHei',arial,tahoma,\5b8b\4f53,sans-serif;}
+	</style>
+	<script type="text/javascript" src="//code.jquery.com/jquery-1.9.1.min.js"></script>
+</head>
+<body>
+	<nav id="nav">
+		<a href="//www.hspweb.cn/" title="superb的博客">superb</a> &#187;
+		<a href="//www.hspweb.cn/demo" title="例子和模板">例子和模板</a> &#187;
+		圣杯布局
+	</nav>
+	<div id="demo">
+		<header id="hd">头部</header>
+		<div id="bd">
+		    <div id="main">主内容栏自适应宽度</div>
+		    <aside id="aside">侧边栏固定宽度</aside>
+		</div>
+		<footer id="ft">底部</footer>
+	</div>
+	
+	<div class="code">
+		<pre>
+			<code class="lang-javascript" style="border-radius: 10px">
+html:
+/*因为html自动识别这个html代码，所以直接把括号去掉*/			
+header id="hd" 头部 /header
+	div id="bd"
+		div id="main" 主内容栏自适应宽度 /div
+		aside id="aside" 侧边栏固定宽度 /aside
+	/div
+footer id="ft" 底部 /footer
+			</code>	
+			<code class="lang-css" style="border-radius: 10px">
+CSS:
+body{margin: auto;width: 80%;}
+#demo{text-align: center;}
+#nav{padding: 20px 0 10px;}
+/*颜色和高度代码*/
+#hd{background-color: #aaa;height: 50px;}
+#main{background-color: #4DBCB0;height: 250px;}
+#aside{background-color: #DAF1EF;height: 250px;}
+#ft{background-color: #cde;height: 50px;}
+/*核心代码*/
+#bd{
+	padding-left:210px;
+	margin: 10px 0;
+	overflow: hidden;
+}
+#aside{
+	float:left;
+	position:relative;
+	left:-210px;
+	width:200px;
+	margin-left:-100%;
+}
+#main{
+	float:left;
+	width:100%;
+}
+            </code>
+        </pre>
+    </div>
+    <div style="margin-bottom: 20px">
+    	简单解释一下上面的CSS Code;<br />
+    	body，#demo，#nav，还有颜色和高度代码就不说了；<br />
+    	直接说核心代码：<br />
+    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;首先我们是在做一个左侧固定宽度，右侧自适应宽度的布局。要让块级元素在同行显示的条件：改变显示方式，改变流方式。这里我们选择了使用 float 来将 #main 和 #aside 变成浮动流。这时我们具备 #main 和 #aside 能在同行显示的前置条件。我们知道，浮动元素其宽度如果没有显式定义，则由其内容决定。正好，#aside是定宽的，所以显示给它定义 width:200px，但此时 #main 该怎么办？不设置 width 不对，因为宽度将被内容左右，设置 width:100% 也不对，因为这样的话，就没有 #aside 的立足之地了，正确的应该是 width: calc(100% - 200px)，不是么？可惜，这是新特性，只好作罢。<br /><br />
+    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;变通？是的，有的时候稍微换个思路，你会觉得豁然开朗。<br /><br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#main 不是要自适应吗？那就给它个 100%，怎么做？我们在包含块 #bd 中就将 #aside 的宽度刨除，宽度全部都给 #main。恩，我们只需要这样 #bd{padding-left:210px;} （10px仍然是用来做间隙的），这时 #main 就可以设置 width:100% 了，由于 #bd 设置了 padding，所以已在左边预留出了一块宽 210px 的区域。此时的问题在于如果将 #aside 挪到这个地方，你想对了，我们是在聊 负margin 布局，自然需要利用上。
+		#aside{margin-left:-100%;} 这样可以了吗？很明显，这样还不行，此时 #aside 和 #main 的起始位置将会重合，因为 #aside 的 margin-left 计算值是相对包含块来计算的，而此时包含块的宽度等于 #main 的宽度。
+		如何让 #aside 再向左偏移 210px？显然 margin 是不行了，因为我们已经用掉它了。如果你看过之前的文章的话，你可能还记得，有一篇文章讲 margin系列之与相对偏移的异同。恩，是的，这时我们可以借助相对偏移。
+		向左偏移 210px 是件很简单的事：#aside{position:relative;left:-210px;}。
+		至此，你的布局OK了，这就是圣杯的实现方式。
+		<br />
+		<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;同理右侧固定自适应代码只需要变动一下
+
+	<div class="code">
+			<pre>
+				<code class="lang-javascript" style="border-radius: 10px">
+/*核心代码*/
+#bd{
+	padding-right:210px;//①
+	margin: 10px 0;
+	overflow: hidden;
+}
+#aside{
+	float:left;
+	position:relative;
+	right:-210px;//②
+	width:200px;
+	margin-left:-200px;//③
+}
+#main{
+	float:left;
+	width:100%;
+}
+				</code>
+			</pre>
+	</div>
+    <div>上面文字描述参考：<a href="//blog.doyoe.com/2013/12/31/css/margin系列之布局篇/" target="_blank">CSS探索之旅</a></div>
+    <footer style="margin-bottom: 20px">By @superb</footer>
+	<script >hljs.initHighlightingOnLoad();</script>  
+</body>
+</html>
